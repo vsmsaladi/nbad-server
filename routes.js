@@ -17,10 +17,10 @@ const jwtMW = exjwt({
 require('dotenv').config();
 
 var connection = mysql.createConnection({
-  host: "ls-6dfee01472b31eaa06ec35602a3373e5b5d2aae8.ctddy6r1axna.us-east-1.rds.amazonaws.com",
-  user: "santosh",
-  password: "santoshmohan",
-  database: "nbadproject",
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
   port: 3306
 });
 
@@ -74,6 +74,7 @@ route.post("/app/signup", (req, res) => {
     [user.email],
     (err, results, fields) => {
       if (err) {
+        console.log(err);
         res.status(400).json({ error: err.message })
       }
       else {
@@ -202,7 +203,7 @@ route.get("/app/userBudget", verifyToken, (req, res) => {
   const user_id = req.user.id;
 
 
-  const query = `SELECT * FROM Budgets WHERE user_id = ?`
+  const query = `SELECT * FROM budgets WHERE user_id = ?`
   connection.query(
     query,
     [user_id],
@@ -377,7 +378,7 @@ route.get("/app/userMonthlyBudget", verifyToken, (req, res) => {
 
   const user_id = req.user.id;
 
-  const query = `SELECT * FROM MonthlyBudgets WHERE user_id = ?`
+  const query = `SELECT * FROM monthlybudgets WHERE user_id = ?`
   connection.query(
     query,
     [user_id],
@@ -407,7 +408,7 @@ route.get("/app/userMonthlyBudget/:year", verifyToken, (req, res) => {
   const year = req.params.year;
 
 
-  const query = `SELECT * FROM MonthlyBudgets WHERE user_id = ? AND year = ?`
+  const query = `SELECT * FROM monthlybudgets WHERE user_id = ? AND year = ?`
   connection.query(
     query,
     [user_id, year.trim()],
@@ -438,7 +439,7 @@ route.get("/app/userMonthlyBudget/:month/:year", verifyToken, (req, res) => {
   const year = req.params.year;
 
 
-  const query = `SELECT * FROM MonthlyBudgets WHERE user_id = ? AND month= ? AND year = ?`
+  const query = `SELECT * FROM monthlybudgets WHERE user_id = ? AND month= ? AND year = ?`
   connection.query(
     query,
     [user_id, month.trim(), year.trim()],
@@ -465,7 +466,7 @@ route.post("/app/userBudget", verifyToken, (req, res) => {
 
   const user_id = req.user.id;
 
-  const query = `SELECT * FROM Budgets WHERE user_id = ? and item = ?`
+  const query = `SELECT * FROM budgets WHERE user_id = ? and item = ?`
   connection.query(
     query,
     [user_id, req.body.item],
@@ -512,7 +513,7 @@ route.post("/app/userMonthlyBudget", verifyToken, (req, res) => {
 
   const user_id = req.user.id;
 
-  const query = `SELECT * FROM MonthlyBudgets WHERE user_id = ? and month = ? and year = ? and item = ?`
+  const query = `SELECT * FROM monthlybudgets WHERE user_id = ? and month = ? and year = ? and item = ?`
   connection.query(
     query,
     [user_id, req.body.month, req.body.year, req.body.item],
@@ -637,7 +638,7 @@ route.put("/app/userMonthlyBudget", verifyToken, (req, res) => {
 route.delete("/app/userBudget", verifyToken, (req, res) => {
 
   const budget_id = req.body.budget_id;
-  const query = `DELETE FROM Budgets where budget_id = ${budget_id}`
+  const query = `DELETE FROM budgets where budget_id = ${budget_id}`
   connection.query(
     query,
     (err, result, fields) => {
