@@ -479,7 +479,7 @@ route.post("/app/userBudget", verifyToken, (req, res) => {
           res.status(201).json({ message: "Budgets for item - " + req.body.item + " already present" })
         }
         else {
-          const budgetQuery = `INSERT INTO Budgets SET ?`
+          const budgetQuery = `INSERT INTO budgets SET ?`
           var budgetData = {
             user_id: user_id,
             item: req.body.item,
